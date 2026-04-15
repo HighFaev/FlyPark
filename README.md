@@ -1,9 +1,9 @@
 # FlyPark - System Zarządzania Parkingiem Lotniskowym
 
 ## Skład zespołu
-**Arseni Fayeu** – Team Leader
-**Mateusz Bosak** – Członek zespołu
-**Adriana Waszeciak** – Członek zespołu
+- **Arseni Fayeu** – Team Leader
+- **Mateusz Bosak** – Członek zespołu
+- **Adriana Waszeciak** – Członek zespołu
 
 ## Temat projektu
 Tematem projektu jest stworzenie responsywnej aplikacji webowej służącej do kompleksowego zarządzania prywatnymi parkingami zlokalizowanymi w sąsiedztwie lotnisk. System jest skierowany zarówno do właścicieli i pracowników parkingów, jak i do klientów korzystających z usług postoju.
