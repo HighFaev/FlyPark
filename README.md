@@ -18,3 +18,6 @@ Główne założenia systemu to:
 - **Bezpieczeństwo danych:** Gromadzenie historii pojazdów i wpłat w jednym miejscu eliminuje ryzyko utraty informacji i ułatwia nadzór nad biznesem.
 
 Aplikacja wykorzystuje powszechny dostęp do smartfonów, umożliwiając klientom błyskawiczną rezerwację, a pracownikom efektywne zarządzanie placówką z dowolnego urządzenia.
+
+## Kanban's table
+https://github.com/users/HighFaev/projects/3
