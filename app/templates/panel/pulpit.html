@@ -1,0 +1,44 @@
+{% extends "panel/base_panel.html" %}
+{% block title %}FlyPark - Pulpit{% endblock %}
+{% block content %}
+<h2 class="mb-4">Pulpit</h2>
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5>Liczba miejsc</h5>
+                <p class="mb-1">Wolne: <strong>{{ wolne }}</strong></p>
+                <p class="mb-1">Zarezerwowane: <strong>{{ zarezerwowane }}</strong></p>
+                <p class="mb-0">Zajęte: <strong>{{ zajete }}</strong></p>
+            </div>
+        </div>
+        <div class="card text-center mt-3">
+            <div class="card-body">
+                <h5>Całkowita zajętość</h5>
+                <p class="display-6 mb-0">{{ zajetosc_proc }}%</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h5>Najbliższe wyjazdy</h5>
+                <table class="table table-sm">
+                    <thead><tr><th>Nr rej.</th><th>Wyjazd</th><th>Opłacony</th></tr></thead>
+                    <tbody>
+                        {% for r in najblizsze %}
+                        <tr>
+                            <td>{{ r.nr_rej_pojazdu }}</td>
+                            <td>{{ r.data_wyjazdu.strftime("%d/%m/%Y %H:%M") }}</td>
+                            <td>{{ "Tak" if r.oplacony else "Nie" }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="3" class="text-muted">Brak danych</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

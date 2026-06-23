@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}FlyPark - Rezerwacja, dane{% endblock %}
+{% block content %}
+<div class="stepper">
+    <div class="step"><div class="circle">1</div>Krok 1: Wybór terminu</div>
+    <div class="step active"><div class="circle">2</div>Krok 2: Dane</div>
+    <div class="step"><div class="circle">3</div>Krok 3: Podsumowanie i płatność</div>
+</div>
+
+<div class="card mx-auto" style="max-width: 800px;">
+    <div class="card-body">
+        {% if blad %}<div class="alert alert-danger">{{ blad }}</div>{% endif %}
+        <form action="/rezerwacja/dane" method="post">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Imię*</label>
+                    <input type="text" name="imie" class="form-control" value="{{ dane.imie or '' }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">E-mail*</label>
+                    <input type="email" name="email" class="form-control" value="{{ dane.email or '' }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Nazwisko*</label>
+                    <input type="text" name="nazwisko" class="form-control" value="{{ dane.nazwisko or '' }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Nr rej. pojazdu*</label>
+                    <input type="text" name="nr_rej_pojazdu" class="form-control" value="{{ dane.nr_rej_pojazdu or '' }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Nr telefonu*</label>
+                    <input type="text" name="telefon" class="form-control" value="{{ dane.telefon or '' }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Nr lotu powrotnego</label>
+                    <input type="text" name="nr_lotu_powrotnego" class="form-control" value="{{ dane.nr_lotu_powrotnego or '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Liczba osób</label>
+                    <input type="number" name="liczba_osob" min="1" class="form-control" value="{{ dane.liczba_osob or 1 }}">
+                </div>
+            </div>
+            <div class="form-check mt-3">
+                <input type="checkbox" name="odbior_z_lotniska" class="form-check-input" id="odbior" {% if dane.odbior_z_lotniska %}checked{% endif %}>
+                <label class="form-check-label" for="odbior">Chcę by odebrano mnie z lotniska</label>
+            </div>
+            <p class="text-muted small mt-2">*Pola obowiązkowe</p>
+            <div class="d-flex justify-content-between mt-3">
+                <a href="/rezerwacja" class="btn btn-outline-secondary">Powrót</a>
+                <button class="btn btn-primary" type="submit">Przejdź do podsumowania</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

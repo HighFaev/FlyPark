@@ -1,0 +1,221 @@
+@startuml DiagramKlas_FlyPark
+title Diagram klas - FlyPark
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam linetype ortho
+skinparam nodesep 60
+skinparam ranksep 70
+skinparam class {
+  BackgroundColor #BBDEFB
+  BorderColor #1976D2
+  ArrowColor #333333
+}
+hide circle
+
+' ===================== ENUMERACJE =====================
+enum StatusRezerwacji {
+  OCZEKUJACA
+  OPLACONA
+  ZAKONCZONA
+  ANULOWANA
+}
+
+enum TypMiejsca {
+  STANDARDOWE
+  ZADASZONE
+}
+
+enum StatusMiejsca {
+  WOLNE
+  ZAREZERWOWANE
+  ZAJETE
+}
+
+enum MetodaPlatnosci {
+  KARTA
+  INTERNETOWA
+  PRZY_SZLABANIE
+}
+
+enum StatusPlatnosci {
+  OCZEKUJACA
+  OPLACONA
+  ODRZUCONA
+}
+
+enum TrasaTransferu {
+  PARKING_LOTNISKO
+  LOTNISKO_PARKING
+}
+
+enum StatusTransferu {
+  OCZEKUJACY
+  ZREALIZOWANY
+}
+
+enum RolaPracownika {
+  PRACOWNIK
+  WLASCICIEL
+}
+
+' ===================== UZYTKOWNICY =====================
+abstract class Uzytkownik {
+  - id : int
+  - imie : String
+  - nazwisko : String
+  - email : String
+  - login : String
+  - haslo : String
+  --
+  + zaloguj(String, String) : boolean
+  + wyloguj() : void
+}
+
+class Klient {
+  - telefon : String
+  --
+  + utworzRezerwacje(Date, Date, TypMiejsca) : Rezerwacja
+  + edytujDane() : void
+}
+
+class Pracownik {
+  - rola : RolaPracownika
+  --
+  + dodajRezerwacje() : Rezerwacja
+  + korygujRezerwacje(Rezerwacja) : void
+}
+
+class Kierowca {
+  + realizujTransfer(Transfer) : void
+}
+
+' ===================== KLASY DZIEDZINOWE =====================
+class Rezerwacja {
+  - numer : String
+  - dataPrzyjazdu : DateTime
+  - dataWyjazdu : DateTime
+  - status : StatusRezerwacji
+  - liczbaOsob : int
+  - transferZLotniska : boolean
+  - nrLotuPowrotnego : String
+  - uwagi : String
+  --
+  + obliczKoszt() : double
+  + potwierdz() : void
+  + anuluj() : void
+  + przypiszMiejsce(MiejsceParkingowe) : void
+}
+
+class Pojazd {
+  - nrRejestracyjny : String
+  - marka : String
+}
+
+class MiejsceParkingowe {
+  - numer : int
+  - typ : TypMiejsca
+  - status : StatusMiejsca
+  --
+  + zarezerwuj() : void
+  + zwolnij() : void
+}
+
+class Parking {
+  - nazwa : String
+  - adres : String
+  - liczbaMiejsc : int
+  --
+  + sprawdzDostepnosc(Date, Date, TypMiejsca) : int
+  + dodajMiejsce(int, TypMiejsca) : MiejsceParkingowe
+}
+
+class Platnosc {
+  - id : int
+  - kwota : double
+  - metoda : MetodaPlatnosci
+  - status : StatusPlatnosci
+  - dataPlatnosci : DateTime
+  --
+  + autoryzuj() : boolean
+  + wystawPotwierdzenie() : void
+}
+
+class Cennik {
+  - obowiazujeOd : Date
+  --
+  + dodajPozycje(String, double) : PozycjaCennika
+  + usunPozycje(PozycjaCennika) : void
+  + obliczKoszt(int) : double
+}
+
+class PozycjaCennika {
+  - opis : String
+  - cena : double
+  - jednostka : String
+}
+
+class Transfer {
+  - id : String
+  - trasa : TrasaTransferu
+  - data : Date
+  - planowanyCzas : Time
+  - rzeczywistyCzas : Time
+  - liczbaOsob : int
+  - status : StatusTransferu
+  --
+  + oznaczJakoZrealizowany() : void
+  + przypiszKierowce(Kierowca) : void
+}
+
+class Raport {
+  - dataOd : Date
+  - dataDo : Date
+  - przychod : double
+  --
+  + generuj() : void
+  + eksportujPDF() : void
+}
+
+' ===================== DZIEDZICZENIE =====================
+Uzytkownik <|-- Klient
+Uzytkownik <|-- Pracownik
+Uzytkownik <|-- Kierowca
+
+' ===================== ASOCJACJE / AGREGACJE / KOMPOZYCJE =====================
+Klient "1" --> "0..*" Rezerwacja
+Rezerwacja "1" *-- "1" Pojazd
+Rezerwacja "0..*" --> "0..1" MiejsceParkingowe
+Rezerwacja "1" *-- "0..1" Platnosc
+Rezerwacja "1" o-- "0..*" Transfer
+
+Parking "1" *-- "1..*" MiejsceParkingowe
+Parking "1" *-- "1" Cennik
+Cennik "1" o-- "1..*" PozycjaCennika
+
+Transfer "0..*" --> "0..1" Kierowca
+
+Pracownik "1" --> "0..*" Rezerwacja
+Pracownik "1" --> "0..*" Transfer
+Pracownik "1" --> "0..*" Raport
+
+' ===================== ZALEZNOSCI OD ENUMERACJI =====================
+MiejsceParkingowe ..> TypMiejsca
+MiejsceParkingowe ..> StatusMiejsca
+Rezerwacja ..> StatusRezerwacji
+Platnosc ..> MetodaPlatnosci
+Platnosc ..> StatusPlatnosci
+Transfer ..> TrasaTransferu
+Transfer ..> StatusTransferu
+Pracownik ..> RolaPracownika
+
+' ===================== WYRANANIE ENUMERACJI W DOLNYM RZEDZIE =====================
+TypMiejsca -[hidden]right- StatusMiejsca
+StatusMiejsca -[hidden]right- StatusRezerwacji
+StatusRezerwacji -[hidden]right- MetodaPlatnosci
+MetodaPlatnosci -[hidden]right- StatusPlatnosci
+StatusPlatnosci -[hidden]right- TrasaTransferu
+TrasaTransferu -[hidden]right- StatusTransferu
+StatusTransferu -[hidden]right- RolaPracownika
+
+@enduml

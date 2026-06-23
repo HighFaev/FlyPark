@@ -1,0 +1,77 @@
+{% extends "panel/base_panel.html" %}
+{% block title %}FlyPark - Szczegóły rezerwacji{% endblock %}
+{% block content %}
+<h2 class="mb-4">Szczegóły rezerwacji - {{ r.nr_rej_pojazdu }}</h2>
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="text-center">Dane klienta</h5>
+                <p class="mb-1">Imię: {{ r.imie }}</p>
+                <p class="mb-1">Nazwisko: {{ r.nazwisko }}</p>
+                <p class="mb-1">Telefon: {{ r.telefon }}</p>
+                <p class="mb-0">E-mail: {{ r.email }}</p>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="text-center">Płatność</h5>
+                <p class="mb-1">Koszt postoju: {{ "%.2f"|format(r.koszt) }} PLN</p>
+                <p class="mb-1">Forma płatności: {{ r.forma_platnosci or "-" }}</p>
+                <p class="mb-0">Opłacony: {{ "Tak" if r.oplacony else "Nie" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="text-center">Informacje o postoju</h5>
+                <form action="/panel/rezerwacje/{{ r.id }}/skoryguj" method="post">
+                    <div class="mb-2">
+                        <label class="form-label">Data i godzina przyjazdu</label>
+                        <input type="datetime-local" name="data_przyjazdu" class="form-control" value="{{ r.data_przyjazdu.strftime('%Y-%m-%dT%H:%M') }}">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Data i godzina wyjazdu</label>
+                        <input type="datetime-local" name="data_wyjazdu" class="form-control" value="{{ r.data_wyjazdu.strftime('%Y-%m-%dT%H:%M') }}">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Nr rej.</label>
+                        <input type="text" name="nr_rej_pojazdu" class="form-control" value="{{ r.nr_rej_pojazdu }}">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Osoby do transferu</label>
+                        <input type="number" name="liczba_osob" min="1" class="form-control" value="{{ r.liczba_osob }}">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Uwagi</label>
+                        <textarea name="uwagi" class="form-control" rows="3">{{ r.uwagi or '' }}</textarea>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" name="oplacony" class="form-check-input" id="oplacony" {% if r.oplacony %}checked{% endif %}>
+                        <label class="form-check-label" for="oplacony">Opłacony</label>
+                    </div>
+                    <button class="btn btn-primary w-100" type="submit">Zatwierdź zmiany</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="text-center">Akcje</h5>
+                {% if r.status == "anulowana" %}
+                    <div class="alert alert-warning">Rezerwacja anulowana</div>
+                {% else %}
+                    <form action="/panel/rezerwacje/{{ r.id }}/anuluj" method="post" onsubmit="return confirm('Anulować postój?');">
+                        <button class="btn btn-danger w-100" type="submit">Anuluj postój</button>
+                    </form>
+                {% endif %}
+                <a href="/panel/rezerwacje" class="btn btn-outline-secondary w-100 mt-2">Powrót do listy</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

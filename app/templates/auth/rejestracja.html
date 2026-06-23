@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}FlyPark - Rejestracja{% endblock %}
+{% block content %}
+<div class="card mx-auto" style="max-width: 480px;">
+    <div class="card-body">
+        <h3 class="mb-3">Rejestracja klienta</h3>
+        {% if blad %}<div class="alert alert-danger">{{ blad }}</div>{% endif %}
+        <form action="/rejestracja" method="post">
+            <div class="row g-3">
+                <div class="col-6">
+                    <label class="form-label">Imię</label>
+                    <input type="text" name="imie" class="form-control" required>
+                </div>
+                <div class="col-6">
+                    <label class="form-label">Nazwisko</label>
+                    <input type="text" name="nazwisko" class="form-control" required>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">E-mail</label>
+                    <input type="email" name="email" class="form-control" required>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Telefon</label>
+                    <input type="text" name="telefon" class="form-control">
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Hasło</label>
+                    <input type="password" name="haslo" class="form-control" required>
+                </div>
+            </div>
+            <button class="btn btn-primary w-100 mt-3" type="submit">Zarejestruj się</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

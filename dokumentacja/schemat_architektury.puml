@@ -1,0 +1,78 @@
+@startuml SchematArchitektury_FlyPark
+title Schemat architektury systemu - FlyPark (klient-serwer, chmura)
+
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam defaultTextAlignment center
+skinparam ArrowColor #333333
+skinparam rectangle {
+  BackgroundColor #BBDEFB
+  BorderColor #1976D2
+}
+skinparam package {
+  BackgroundColor #E8F2FD
+  BorderColor #1976D2
+}
+skinparam database {
+  BackgroundColor #BBDEFB
+  BorderColor #1976D2
+}
+skinparam cloud {
+  BackgroundColor #FFF3CD
+  BorderColor #B8860B
+}
+skinparam actor {
+  BackgroundColor #BBDEFB
+  BorderColor #1976D2
+}
+
+actor "Klient" as Klient
+actor "Pracownik biura" as Pracownik
+actor "Kierowca" as Kierowca
+
+package "Warstwa prezentacji\n(Frontend - aplikacja webowa RWD)" as Frontend {
+  rectangle "Strona klienta\n(rezerwacja, platnosc)" as UIKlient
+  rectangle "Panel pracownika\n(rezerwacje, zajetosc, raporty)" as UIPracownik
+  rectangle "Panel kierowcy\n(harmonogram transferow)" as UIKierowca
+}
+
+interface "REST API\n(HTTPS / JSON)" as API
+
+package "Warstwa logiki biznesowej\n(Backend - serwer aplikacji)" as Backend {
+  rectangle "Modul uwierzytelniania" as MUwierzytelnianie
+  rectangle "Modul rezerwacji" as MRezerwacje
+  rectangle "Modul platnosci" as MPlatnosci
+  rectangle "Modul zajetosci parkingu" as MZajetosc
+  rectangle "Modul transferow" as MTransfery
+  rectangle "Modul raportow" as MRaporty
+}
+
+database "Baza danych\n(chmura)" as DB
+cloud "Zewnetrzna bramka\nplatnosci" as Bramka
+
+Klient --> UIKlient
+Pracownik --> UIPracownik
+Kierowca --> UIKierowca
+
+UIKlient --> API
+UIPracownik --> API
+UIKierowca --> API
+
+API --> MUwierzytelnianie
+API --> MRezerwacje
+API --> MPlatnosci
+API --> MZajetosc
+API --> MTransfery
+API --> MRaporty
+
+MUwierzytelnianie --> DB
+MRezerwacje --> DB
+MPlatnosci --> DB
+MZajetosc --> DB
+MTransfery --> DB
+MRaporty --> DB
+
+MPlatnosci --> Bramka : autoryzacja platnosci
+Bramka ..> MPlatnosci : potwierdzenie (webhook)
+
+@enduml

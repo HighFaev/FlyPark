@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}FlyPark - Panel pracownika{% endblock %}
+{% block content %}
+<div class="card mx-auto" style="max-width: 420px;">
+    <div class="card-body">
+        <h3 class="mb-3">Panel Pracownika - Logowanie</h3>
+        {% if blad %}<div class="alert alert-danger">{{ blad }}</div>{% endif %}
+        <form action="/logowanie/pracownik" method="post">
+            <div class="mb-3">
+                <label class="form-label">E-mail / Login</label>
+                <input type="email" name="email" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Hasło</label>
+                <input type="password" name="haslo" class="form-control" required>
+            </div>
+            <button class="btn btn-primary w-100" type="submit">Zaloguj się</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

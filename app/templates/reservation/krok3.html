@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}FlyPark - Podsumowanie{% endblock %}
+{% block content %}
+<div class="stepper">
+    <div class="step"><div class="circle">1</div>Krok 1: Wybór terminu</div>
+    <div class="step"><div class="circle">2</div>Krok 2: Dane</div>
+    <div class="step active"><div class="circle">3</div>Krok 3: Podsumowanie i płatność</div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h4>Podsumowanie rezerwacji</h4>
+                <p class="mb-1">Termin postoju: {{ dane.przyjazd }} - {{ dane.wyjazd }}</p>
+                <p class="mb-1">Imię i nazwisko: {{ dane.imie }} {{ dane.nazwisko }}</p>
+                <p class="mb-1">Nr rej. pojazdu: {{ dane.nr_rej_pojazdu }}</p>
+                <p class="mb-1">Typ miejsca: {{ dane.typ_miejsca }}</p>
+                <p class="mb-1">Odbiór z lotniska: {{ "tak" if dane.odbior_z_lotniska else "nie" }}</p>
+                <p class="mb-1">Liczba osób: {{ dane.liczba_osob }}</p>
+                <p class="mb-1">Numer telefonu: {{ dane.telefon }}</p>
+                <p class="mb-1">E-mail: {{ dane.email }}</p>
+                <hr>
+                <p class="fs-5 fw-bold">Całkowity koszt postoju: {{ "%.2f"|format(koszt) }} PLN</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h4>Wybierz formę płatności</h4>
+                <form action="/rezerwacja/zatwierdz" method="post" id="form-platnosc">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="forma_platnosci" id="p1" value="karta" checked>
+                        <label class="form-check-label" for="p1">Płatność kartą</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="forma_platnosci" id="p2" value="internetowa">
+                        <label class="form-check-label" for="p2">Płatność internetowa</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="forma_platnosci" id="p3" value="szlaban">
+                        <label class="form-check-label" for="p3">Płatność przy szlabanie</label>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="/rezerwacja/dane" class="btn btn-outline-secondary">Powrót</a>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalPlatnosc">Zatwierdź</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalPlatnosc" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Płatność (demo)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>To jest okno demonstracyjne. Żadna prawdziwa płatność nie jest realizowana.</p>
+                <p class="fw-bold">Do zapłaty: {{ "%.2f"|format(koszt) }} PLN</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Anuluj</button>
+                <button type="submit" form="form-platnosc" class="btn btn-success">Zapłać i potwierdź</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

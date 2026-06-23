@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}FlyPark - Strona główna{% endblock %}
+{% block content %}
+<div class="hero text-center mb-5">
+    <h1 class="mb-4">Parking przy lotnisku</h1>
+    <form action="/rezerwacja" method="get" class="row g-2 justify-content-center">
+        <div class="col-md-3">
+            <input type="datetime-local" name="przyjazd" class="form-control" placeholder="Data przyjazdu">
+        </div>
+        <div class="col-md-3">
+            <input type="datetime-local" name="wyjazd" class="form-control" placeholder="Data wyjazdu">
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100" type="submit">Szukaj</button>
+        </div>
+    </form>
+</div>
+
+<h2 class="text-center mb-4">Dlaczego my?</h2>
+<div class="row text-center g-4">
+    <div class="col-md-4">
+        <i class="bi bi-bus-front feature-icon"></i>
+        <h5 class="mt-2">Transport</h5>
+        <p class="text-muted small">Bezpłatny transfer między parkingiem a lotniskiem wliczony w cenę postoju.</p>
+    </div>
+    <div class="col-md-4">
+        <i class="bi bi-shield-check feature-icon"></i>
+        <h5 class="mt-2">Bezpieczeństwo</h5>
+        <p class="text-muted small">Parking monitorowany całą dobę, ogrodzony i oświetlony.</p>
+    </div>
+    <div class="col-md-4">
+        <i class="bi bi-clock-history feature-icon"></i>
+        <h5 class="mt-2">Rezerwacja 24/7</h5>
+        <p class="text-muted small">Zarezerwuj miejsce online o dowolnej porze, bez wychodzenia z domu.</p>
+    </div>
+</div>
+{% endblock %}

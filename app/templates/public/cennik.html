@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}FlyPark - Cennik{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-7">
+        <h2>Cennik parkingu</h2>
+        <table class="table table-striped bg-white">
+            <thead>
+                <tr><th>Czas parkowania</th><th class="text-end">Cena</th></tr>
+            </thead>
+            <tbody>
+                {% for p in pozycje %}
+                <tr><td>{{ p.nazwa }}</td><td class="text-end">{{ "%.2f"|format(p.cena) }} PLN</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p class="text-muted small">Parking monitorowany. Transport między parkingiem a lotniskiem w cenie. Faktura VAT.</p>
+    </div>
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Kalkulator kosztów</h4>
+                <form action="/cennik/oblicz" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Data przyjazdu</label>
+                        <input type="datetime-local" name="przyjazd" class="form-control" value="{{ przyjazd or '' }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Data wyjazdu</label>
+                        <input type="datetime-local" name="wyjazd" class="form-control" value="{{ wyjazd or '' }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Typ miejsca</label>
+                        <select name="typ_miejsca" class="form-select">
+                            <option value="standard" {% if typ_miejsca=='standard' %}selected{% endif %}>Standardowe</option>
+                            <option value="zadaszone" {% if typ_miejsca=='zadaszone' %}selected{% endif %}>Zadaszone</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary w-100" type="submit">Oblicz koszt</button>
+                </form>
+                {% if koszt is not none %}
+                <div class="alert alert-info mt-3 mb-0 text-center">
+                    Przewidywany koszt postoju<br><span class="fs-4 fw-bold">{{ "%.2f"|format(koszt) }} PLN</span>
+                </div>
+                <a href="/rezerwacja?przyjazd={{ przyjazd }}&wyjazd={{ wyjazd }}&typ_miejsca={{ typ_miejsca }}" class="btn btn-success w-100 mt-2">Zarezerwuj teraz</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

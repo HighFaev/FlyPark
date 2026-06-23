@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: flypark
+      POSTGRES_PASSWORD: flypark
+      POSTGRES_DB: flypark
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U flypark"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    environment:
+      DATABASE_URL: postgresql+psycopg2://flypark:flypark@db:5432/flypark
+      SECRET_KEY: zmien-ten-klucz-na-losowy
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

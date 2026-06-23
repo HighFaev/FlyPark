@@ -1,0 +1,49 @@
+{% extends "panel/base_panel.html" %}
+{% block title %}FlyPark - Rezerwacje{% endblock %}
+{% block content %}
+<h2 class="mb-4">Rezerwacje</h2>
+<form class="row g-2 mb-3" method="get" action="/panel/rezerwacje">
+    <div class="col-md-4">
+        <input type="text" name="q" class="form-control" placeholder="Wyszukaj po Nr. rej." value="{{ q or '' }}">
+    </div>
+    <div class="col-md-3">
+        <select name="oplacony" class="form-select">
+            <option value="">Filtruj: wszystkie</option>
+            <option value="tak" {% if oplacony=='tak' %}selected{% endif %}>Opłacone</option>
+            <option value="nie" {% if oplacony=='nie' %}selected{% endif %}>Nieopłacone</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-primary w-100" type="submit">Szukaj</button>
+    </div>
+</form>
+
+<table class="table table-striped bg-white">
+    <thead>
+        <tr>
+            <th>Nr rej.</th>
+            <th>Data i godzina przyjazdu</th>
+            <th>Deklarowana data i godzina wyjazdu</th>
+            <th>Opłacony</th>
+            <th>Transfer z lotniska</th>
+            <th>Status</th>
+            <th>Szczegóły</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in rezerwacje %}
+        <tr>
+            <td>{{ r.nr_rej_pojazdu }}</td>
+            <td>{{ r.data_przyjazdu.strftime("%d/%m/%Y | %H:%M") }}</td>
+            <td>{{ r.data_wyjazdu.strftime("%d/%m/%Y | %H:%M") }}</td>
+            <td>{{ "Tak" if r.oplacony else "Nie" }}</td>
+            <td>{{ "Tak" if r.odbior_z_lotniska else "Nie" }}</td>
+            <td>{{ r.status }}</td>
+            <td><a href="/panel/rezerwacje/{{ r.id }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-search"></i></a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" class="text-muted">Brak rezerwacji</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

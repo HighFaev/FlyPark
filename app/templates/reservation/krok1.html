@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}FlyPark - Rezerwacja{% endblock %}
+{% block content %}
+<div class="stepper">
+    <div class="step active"><div class="circle">1</div>Krok 1: Wybór terminu</div>
+    <div class="step"><div class="circle">2</div>Krok 2: Dane</div>
+    <div class="step"><div class="circle">3</div>Krok 3: Podsumowanie i płatność</div>
+</div>
+
+<div class="card mx-auto" style="max-width: 700px;">
+    <div class="card-body">
+        {% if blad %}<div class="alert alert-danger">{{ blad }}</div>{% endif %}
+        <form action="/rezerwacja" method="post">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Data i godzina przyjazdu</label>
+                    <input type="datetime-local" name="przyjazd" class="form-control" value="{{ dane.przyjazd or '' }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Data i godzina wyjazdu</label>
+                    <input type="datetime-local" name="wyjazd" class="form-control" value="{{ dane.wyjazd or '' }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Typ miejsca</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="typ_miejsca" id="t1" value="standard" {% if dane.typ_miejsca != 'zadaszone' %}checked{% endif %}>
+                            <label class="form-check-label" for="t1">Standardowe</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="typ_miejsca" id="t2" value="zadaszone" {% if dane.typ_miejsca == 'zadaszone' %}checked{% endif %}>
+                            <label class="form-check-label" for="t2">Zadaszone</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Szacowany koszt</label>
+                    <p class="fs-5 fw-bold mb-0">{% if koszt is not none %}{{ "%.2f"|format(koszt) }} PLN{% else %}-{% endif %}</p>
+                </div>
+            </div>
+            <button class="btn btn-primary w-100 mt-4" type="submit">Sprawdź dostępność</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

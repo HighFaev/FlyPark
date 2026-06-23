@@ -1,0 +1,59 @@
+@startuml DiagramSekwencji_RezerwacjaOnline
+title Diagram sekwencji - Rezerwacja online przez klienta
+
+skinparam shadowing false
+skinparam sequence {
+  LifeLineBackgroundColor #BBDEFB
+  LifeLineBorderColor #1976D2
+  ParticipantBackgroundColor #BBDEFB
+  ParticipantBorderColor #1976D2
+  ActorBorderColor #1976D2
+  ArrowColor #333333
+}
+
+actor "Klient" as Klient
+boundary "Interfejs rezerwacji" as UI
+control "System rezerwacji" as System
+entity "Baza danych" as DB
+participant "Serwis e-mail" as Mail
+
+activate Klient
+Klient -> UI : 1: wybierzTerminITyp(przyjazd, wyjazd, typ)
+activate UI
+UI -> System : 2: sprawdzDostepnosc(przyjazd, wyjazd, typ)
+activate System
+System -> DB : 3: pobierzWolneMiejsca(przyjazd, wyjazd, typ)
+activate DB
+DB --> System : 4: liczbaWolnychMiejsc
+deactivate DB
+
+alt brak dostepnych miejsc
+    System --> UI : 5: komunikatOBrakuMiejsc()
+    UI --> Klient : 6: wyswietlBrakMiejsc()
+else dostepne miejsca
+    System --> UI : 7: pokazFormularzDanych()
+    UI --> Klient : 8: wyswietlFormularz()
+    Klient -> UI : 9: wyslijDane(daneOsobowe, pojazd)
+    UI -> System : 10: utworzRezerwacje(daneOsobowe, pojazd)
+    System -> System : 11: walidujDane(daneOsobowe)
+
+    alt dane bledne
+        System --> UI : 12: komunikatBlednychDanych()
+        UI --> Klient : 13: popraweDane()
+    else dane poprawne
+        System -> DB : 14: zapiszRezerwacje(status = "Oczekujaca")
+        activate DB
+        DB --> System : 15: numerRezerwacji
+        deactivate DB
+        System -> Mail : 16: wyslijPotwierdzenie(email, numerRezerwacji)
+        activate Mail
+        Mail --> System : 17: potwierdzenieWyslane
+        deactivate Mail
+        System --> UI : 18: rezerwacjaUtworzona(numerRezerwacji)
+        UI --> Klient : 19: wyswietlPotwierdzenie(numerRezerwacji)
+    end
+end
+deactivate System
+deactivate UI
+deactivate Klient
+@enduml
