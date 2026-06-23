@@ -7,7 +7,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from app.config import settings
 from app.database import Base, SessionLocal, engine
-from app.routers import auth, panel, public, reservation
+from app.routers import auth, konto, panel, public, reservation
 from app.security import AuthRedirect
 from app.seed import seed
 
@@ -32,6 +32,7 @@ app.include_router(public.router)
 app.include_router(reservation.router)
 app.include_router(auth.router)
 app.include_router(panel.router)
+app.include_router(konto.router)
 
 
 @app.exception_handler(AuthRedirect)

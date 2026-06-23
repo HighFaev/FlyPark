@@ -30,7 +30,7 @@ def login_klient(
     haslo: str = Form(...),
     db: Session = Depends(get_db),
 ):
-    return _zaloguj(request, db, email, haslo, "client", "auth/login_klient.html", "/")
+    return _zaloguj(request, db, email, haslo, "client", "auth/login_klient.html", "/konto")
 
 
 @router.get("/logowanie/pracownik")
@@ -76,7 +76,7 @@ def rejestracja(
     db.add(user)
     db.commit()
     login_user(request, user)
-    return RedirectResponse("/", status_code=303)
+    return RedirectResponse("/konto", status_code=303)
 
 
 @router.get("/wyloguj")

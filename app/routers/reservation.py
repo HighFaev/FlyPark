@@ -1,3 +1,6 @@
+import re
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
@@ -9,6 +12,9 @@ from app.routers.public import parse_dt
 from app.templating import render
 
 router = APIRouter(prefix="/rezerwacja")
+
+PLATE_RE = re.compile(r"^[A-Za-z0-9 \-]{3,12}$")
+EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
 def _koszt(db: Session, dane: dict):
@@ -51,14 +57,22 @@ def krok1_zapisz(
     dane.update({"przyjazd": przyjazd, "wyjazd": wyjazd, "typ_miejsca": typ_miejsca})
     request.session["rezerwacja"] = dane
 
-    if not (p and w) or w <= p:
+    blad = None
+    if not (p and w):
+        blad = "Podaj poprawną datę i godzinę przyjazdu oraz wyjazdu."
+    elif p < datetime.now():
+        blad = "Data przyjazdu nie może być w przeszłości."
+    elif w <= p:
+        blad = "Data wyjazdu musi być późniejsza niż data przyjazdu."
+
+    if blad:
         return render(
             request,
             "reservation/krok1.html",
             active="rezerwacja",
             dane=dane,
             koszt=None,
-            blad="Data wyjazdu musi być późniejsza niż data przyjazdu.",
+            blad=blad,
         )
     return RedirectResponse("/rezerwacja/dane", status_code=303)
 
@@ -97,6 +111,20 @@ def krok2_zapisz(
         }
     )
     request.session["rezerwacja"] = dane
+
+    blad = None
+    if not EMAIL_RE.match(email.strip()):
+        blad = "Podaj poprawny adres e-mail."
+    elif not PLATE_RE.match(nr_rej_pojazdu.strip()):
+        blad = "Nr rejestracyjny powinien mieć od 3 do 12 znaków (litery, cyfry, spacje)."
+    elif len(re.sub(r"\D", "", telefon)) < 7:
+        blad = "Podaj poprawny numer telefonu (minimum 7 cyfr)."
+    elif liczba_osob < 1 or liczba_osob > 9:
+        blad = "Liczba osób musi być od 1 do 9."
+
+    if blad:
+        return render(request, "reservation/krok2.html", active="rezerwacja", dane=dane, blad=blad)
+
     return RedirectResponse("/rezerwacja/podsumowanie", status_code=303)
 
 

@@ -45,3 +45,9 @@ def require_employee(user: User | None = Depends(current_user)) -> User:
     if user is None or user.role != "employee":
         raise AuthRedirect("/logowanie/pracownik")
     return user
+
+
+def require_client(user: User | None = Depends(current_user)) -> User:
+    if user is None or user.role != "client":
+        raise AuthRedirect("/logowanie/klient")
+    return user

@@ -20,6 +20,8 @@
                 <span class="align-self-center me-2">{{ session.get("imie") }} {{ session.get("nazwisko") }}</span>
                 {% if session.get("role") == "employee" %}
                     <a href="/panel" class="btn btn-outline-secondary btn-sm">Panel</a>
+                {% elif session.get("role") == "client" %}
+                    <a href="/konto" class="btn btn-outline-secondary btn-sm">Moje konto</a>
                 {% endif %}
                 <a href="/wyloguj" class="btn btn-outline-danger btn-sm">Wyloguj</a>
             {% else %}

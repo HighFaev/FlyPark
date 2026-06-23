@@ -78,4 +78,37 @@ def seed(db: Session) -> None:
                     status="aktywna",
                 )
             )
+
+        klient = db.query(User).filter(User.email == "klient@flypark.pl").first()
+        if klient:
+            # Jedna aktywna (w przyszłości), jedna zakończona (w przeszłości), jedna anulowana.
+            klient_rezerwacje = [
+                (timedelta(days=2, hours=9), timedelta(days=5, hours=12), "standard", True, "aktywna"),
+                (timedelta(days=-20, hours=8), timedelta(days=-17, hours=10), "zadaszone", True, "aktywna"),
+                (timedelta(days=-5, hours=8), timedelta(days=-3, hours=8), "standard", False, "anulowana"),
+            ]
+            for offset_p, offset_w, typ, oplacony, status in klient_rezerwacje:
+                przyjazd = teraz + offset_p
+                wyjazd = teraz + offset_w
+                koszt = oblicz_koszt(przyjazd, wyjazd, cennik, typ)
+                db.add(
+                    Reservation(
+                        imie=klient.imie,
+                        nazwisko=klient.nazwisko,
+                        telefon=klient.telefon or "+48 500 600 700",
+                        email=klient.email,
+                        nr_rej_pojazdu="KR 77777",
+                        nr_lotu_powrotnego="LO456",
+                        liczba_osob=2,
+                        odbior_z_lotniska=True,
+                        data_przyjazdu=przyjazd,
+                        data_wyjazdu=wyjazd,
+                        typ_miejsca=typ,
+                        koszt=koszt,
+                        oplacony=oplacony,
+                        forma_platnosci="karta" if oplacony else None,
+                        status=status,
+                        user_id=klient.id,
+                    )
+                )
         db.commit()

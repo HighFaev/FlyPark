@@ -26,11 +26,11 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Nr rej. pojazdu*</label>
-                    <input type="text" name="nr_rej_pojazdu" class="form-control" value="{{ dane.nr_rej_pojazdu or '' }}" required>
+                    <input type="text" name="nr_rej_pojazdu" class="form-control" value="{{ dane.nr_rej_pojazdu or '' }}" placeholder="np. KR 12345" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Nr telefonu*</label>
-                    <input type="text" name="telefon" class="form-control" value="{{ dane.telefon or '' }}" required>
+                    <input type="tel" name="telefon" class="form-control" value="{{ dane.telefon or '' }}" placeholder="+48 123 456 789" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Nr lotu powrotnego</label>
@@ -38,7 +38,7 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Liczba osób</label>
-                    <input type="number" name="liczba_osob" min="1" class="form-control" value="{{ dane.liczba_osob or 1 }}">
+                    <input type="number" name="liczba_osob" min="1" max="9" class="form-control" value="{{ dane.liczba_osob or 1 }}">
                 </div>
             </div>
             <div class="form-check mt-3">

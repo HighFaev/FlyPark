@@ -35,3 +35,13 @@ def employee_client(client):
         follow_redirects=False,
     )
     return client
+
+
+@pytest.fixture
+def client_logged(client):
+    client.post(
+        "/logowanie/klient",
+        data={"email": "klient@flypark.pl", "haslo": "klient123"},
+        follow_redirects=False,
+    )
+    return client
